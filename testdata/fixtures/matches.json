@@ -1,0 +1,92 @@
+[
+  {
+    "MatchID": 51215,
+    "MatchDateTime": "2018-11-09T20:30:00",
+    "TimeZoneID": "W. Europe Standard Time",
+    "LeagueId": 4276,
+    "LeagueName": "1. Fußball-Bundesliga 2018/2019",
+    "MatchDateTimeUTC": "2018-11-09T19:30:00Z",
+    "Group": {
+      "GroupName": "11. Spieltag",
+      "GroupOrderID": 11,
+      "GroupID": 31785
+    },
+    "Team1": {
+      "TeamId": 55,
+      "TeamName": "Hannover 96",
+      "ShortName": "Hannover",
+      "TeamIconUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Hannover_96_Logo.svg/1162px-Hannover_96_Logo.svg.png",
+      "TeamGroupName": null
+    },
+    "Team2": {
+      "TeamId": 131,
+      "TeamName": "VfL Wolfsburg",
+      "ShortName": "VfL Wolfsburg",
+      "TeamIconUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Logo-VfL-Wolfsburg.svg/1024px-Logo-VfL-Wolfsburg.svg.png",
+      "TeamGroupName": null
+    },
+    "LastUpdateDateTime": "2018-11-09T22:42:15.097",
+    "MatchIsFinished": true,
+    "MatchResults": [
+      {
+        "ResultID": 84309,
+        "ResultName": "Endergebnis",
+        "PointsTeam1": 2,
+        "PointsTeam2": 1,
+        "ResultOrderID": 2,
+        "ResultTypeID": 2,
+        "ResultDescription": "Ergebnis nach Ende der offiziellen Spielzeit"
+      },
+      {
+        "ResultID": 84310,
+        "ResultName": "Halbzeit",
+        "PointsTeam1": 1,
+        "PointsTeam2": 0,
+        "ResultOrderID": 1,
+        "ResultTypeID": 1,
+        "ResultDescription": "Zwischenstand zur Halbzeit"
+      }
+    ],
+    "Goals": [
+      {
+        "GoalID": 73491,
+        "ScoreTeam1": 1,
+        "ScoreTeam2": 0,
+        "MatchMinute": 31,
+        "GoalGetterID": 16980,
+        "GoalGetterName": "Maina, L.",
+        "IsPenalty": false,
+        "IsOwnGoal": false,
+        "IsOvertime": false,
+        "Comment": null
+      },
+      {
+        "GoalID": 73492,
+        "ScoreTeam1": 2,
+        "ScoreTeam2": 0,
+        "MatchMinute": 62,
+        "GoalGetterID": 15011,
+        "GoalGetterName": "Bebou",
+        "IsPenalty": true,
+        "IsOwnGoal": false,
+        "IsOvertime": false,
+        "Comment": null
+      },
+      {
+        "GoalID": 73493,
+        "ScoreTeam1": 2,
+        "ScoreTeam2": 1,
+        "MatchMinute": 82,
+        "GoalGetterID": 16906,
+        "GoalGetterName": "Weghorst",
+        "IsPenalty": true,
+        "IsOwnGoal": false,
+        "IsOvertime": false,
+        "Comment": null
+      }
+    ],
+    "Location": null,
+    "NumberOfViewers": null
+  }
+]
+
