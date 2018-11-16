@@ -1,0 +1,1 @@
+# openligadb-go
