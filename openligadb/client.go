@@ -14,7 +14,6 @@ import (
 const (
 	defaultBaseURL = "https://www.openligadb.de/"
 	userAgent      = "go-openligadb"
-
 //	wsdlURL = "https://www.openligadb.de/Webservices/Sportsdata.asmx?WSDL"
 )
 
@@ -42,18 +41,24 @@ type MatchResult struct {
 }
 
 type Match struct {
-	MatchID         int
-	TimeZoneID      string
-	LeagueId        int
-	MatchDateTime   civil.DateTime
-	Team1           Team
-	Team2           Team
-	MatchIsFinished bool
-	MatchResults    []MatchResult
-	Goals           []Goal
-	// Location string
+	MatchID            int
+	TimeZoneID         string
+	LeagueId           int
+	MatchDateTime      civil.DateTime
+	Team1              Team
+	Team2              Team
+	MatchIsFinished    bool
+	MatchResults       []MatchResult
+	Goals              []Goal
+	Location           Location
 	NumberOfViewers    string
 	LastUpdateDateTime string
+}
+
+type Location struct {
+	LocationCity    string
+	LocationID      int
+	LocationStadium string
 }
 
 type Goal struct {
@@ -101,17 +106,9 @@ func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 	return body, nil
 }
 
-func (c *Client) GetMatches(league string, year int, month int) (*[]Match, error) {
-	// api/getmatchdata/bl1/2016/11
 
-	/*
-		if league
-		league := "bl1"
-		year := "2018"
-		month := "11"
-	*/
-
-	url := fmt.Sprintf(c.BaseURL.String()+"api/getmatchdata/%s/%d/%d", league, year, month)
+func (c *Client) getMatchData(endpoint string) (*[]Match, error) { 
+	url := fmt.Sprintf(c.BaseURL.String()+endpoint)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -120,7 +117,6 @@ func (c *Client) GetMatches(league string, year int, month int) (*[]Match, error
 	if err != nil {
 		return nil, err
 	}
-
 	/*
 		s := fmt.Sprintf("%s", byteArr)
 		fmt.Printf("%s", s)
@@ -131,4 +127,93 @@ func (c *Client) GetMatches(league string, year int, month int) (*[]Match, error
 		return nil, err
 	}
 	return &data, nil
+
 }
+
+
+func (c *Client) GetMatches(leagueShortcut string, leagueSaison int, matchday int) (*[]Match, error) {
+	//  "bl1", 2018, 10
+	endpoint := fmt.Sprintf("api/getmatchdata/%s/%d/%d", leagueShortcut, leagueSaison, matchday)
+	return c.getMatchData(endpoint)
+}
+
+
+func (c *Client) GetAvailGroups(leagueShortcut string, leagueSaison int) {}
+
+func (c *Client) GetAvailLeagues() {}
+
+func (c *Client) GetAvailLeaguesBySports(sportID int) {}
+
+func (c *Client) GetAvailSports() {
+
+}
+
+func (c *Client) GetCurrentGroup(leagueShortcut string) {
+	// getGroupData
+	// return c.getJsonData("api/getcurrentgroup/" + leagueShortcut)
+}
+
+func (c *Client) GetCurrentGroupOrderID(leagueShortcut string) {}
+
+func (c *Client) GetGoalGettersByLeagueSaison(leagueShortcut string, leagueSaison int) {
+	// 
+	// return c.getJsonData("api/getgoalgetters/" + leagueShortcut + "/" + leagueSaison)
+}
+
+func (c *Client) GetGoalsByLeagueSaison(leagueShortcut string, leagueSaison string) {}
+
+func (c *Client) GetGoalsByMatch(matchID int) {
+
+}
+
+func (c *Client) GetLastChangeDateByGroupLeagueSaison(groupOrderID int, leagueShortcut string, leagueSaison string) {}
+
+
+func (c *Client) GetLastChangeDateByLeagueSaison(leagueShortcut string, leagueSaison int, day int) {
+	// day?
+	// 
+	// return c.getJsonData("api/getlastchangedate/" + leagueShortcut + "/" + leagueSaison + "/" + day )
+}
+
+func (c *Client) GetLastMatch(leagueShortcut string) (*[]Match, error) {
+	return c.getMatchData("api/getmatchdata/" + leagueShortcut)
+}
+
+func (c *Client) GetLastMatchByLeagueTeam(leagueID int, teamID int) (*[]Match, error) {
+	return c.getMatchData("api/getmatchdata/" + string(leagueID) + "/" + string(teamID))
+}
+
+func (c *Client) GetMatchByMatchID(matchID int) (*[]Match, error)  {
+	return c.getMatchData("api/getmatchdata/" + string(matchID))
+}
+
+func (c *Client) GetMatchdataByGroupLeagueSaison(groupOrderID int, leagueShortcut string, leagueSaison string) {}
+
+func (c *Client) GetMatchdataByGroupLeagueSaisonJSON(groupOrderID int, leagueShortcut string, leagueSaison string) {}
+
+func (c *Client) GetMatchdataByLeagueDateTime(fromDateTime string, toDateTime string, leagueShortcut string) (*[]Match, error) {
+	// ?
+	return c.getMatchData("api/getmatchdata/" + leagueShortcut + "/" + fromDateTime + "/" + toDateTime)
+}
+
+func (c *Client) GetMatchdataByLeagueSaison(leagueShortcut string, leagueSaison int) (*[]Match, error) {
+	return c.getMatchData("api/getmatchdata/" + leagueShortcut + "/" + string(leagueSaison))
+}
+
+func (c *Client) GetMatchdataByTeams(teamID1 int, teamID2 int) (*[]Match, error) {
+	return c.getMatchData("api/getmatchdata/" + string(teamID1) + "/" + string(teamID2))
+}
+
+func (c *Client) GetNextMatch(leagaueShortcut string) {
+
+}
+
+func (c *Client) GetNextMatchByLeagueTeam(leagueID int, teamID int) (*[]Match, error) {
+	return c.getMatchData("api/getnextmatchbyleagueteam/" +  string(leagueID) + "/" + string(teamID))
+}
+
+func (c *Client) GetTeamsByLeagueSaison(leagaueShortcut string, leagueSaison int) (*[]Match, error) {
+	return c.getMatchData("/api/getavailableteams/" +  leagaueShortcut + "/" + string(leagueSaison))
+}
+
+
