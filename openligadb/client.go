@@ -6,15 +6,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	//	"strings"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 const (
 	defaultBaseURL = "https://www.openligadb.de/"
 	userAgent      = "go-openligadb"
-//	wsdlURL = "https://www.openligadb.de/Webservices/Sportsdata.asmx?WSDL"
+	//	wsdlURL = "https://www.openligadb.de/Webservices/Sportsdata.asmx?WSDL"
+	verbose = false
 )
 
 type Client struct {
@@ -106,9 +107,8 @@ func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 	return body, nil
 }
 
-
-func (c *Client) getMatchData(endpoint string) (*[]Match, error) { 
-	url := fmt.Sprintf(c.BaseURL.String()+endpoint)
+func (c *Client) getMatchData(endpoint string) (*[]Match, error) {
+	url := fmt.Sprintf("%s%s", c.BaseURL.String(), endpoint)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -117,11 +117,33 @@ func (c *Client) getMatchData(endpoint string) (*[]Match, error) {
 	if err != nil {
 		return nil, err
 	}
-	/*
+	if verbose {
 		s := fmt.Sprintf("%s", byteArr)
 		fmt.Printf("%s", s)
-	*/
+	}
 	var data []Match
+	err = json.Unmarshal(byteArr, &data)
+	if err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
+func (c *Client) getSingleMatchData(endpoint string) (*Match, error) {
+	url := fmt.Sprintf("%s%s", c.BaseURL.String(), endpoint)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	byteArr, err := c.doRequest(req)
+	if err != nil {
+		return nil, err
+	}
+	if verbose {
+		s := fmt.Sprintf("%s", byteArr)
+		fmt.Printf("%s", s)
+	}
+	var data Match
 	err = json.Unmarshal(byteArr, &data)
 	if err != nil {
 		return nil, err
@@ -130,13 +152,10 @@ func (c *Client) getMatchData(endpoint string) (*[]Match, error) {
 
 }
 
-
 func (c *Client) GetMatches(leagueShortcut string, leagueSaison int, matchday int) (*[]Match, error) {
-	//  "bl1", 2018, 10
 	endpoint := fmt.Sprintf("api/getmatchdata/%s/%d/%d", leagueShortcut, leagueSaison, matchday)
 	return c.getMatchData(endpoint)
 }
-
 
 func (c *Client) GetAvailGroups(leagueShortcut string, leagueSaison int) {}
 
@@ -156,23 +175,22 @@ func (c *Client) GetCurrentGroup(leagueShortcut string) {
 func (c *Client) GetCurrentGroupOrderID(leagueShortcut string) {}
 
 func (c *Client) GetGoalGettersByLeagueSaison(leagueShortcut string, leagueSaison int) {
-	// 
-	// return c.getJsonData("api/getgoalgetters/" + leagueShortcut + "/" + leagueSaison)
+	// return c.getGoalsData("api/getgoalgetters/" + leagueShortcut + "/" + leagueSaison)
 }
 
 func (c *Client) GetGoalsByLeagueSaison(leagueShortcut string, leagueSaison string) {}
 
-func (c *Client) GetGoalsByMatch(matchID int) {
-
+func (c *Client) GetGoalsByMatch(matchID int) (*[]Match, error) {
+	// ?
+	return c.getMatchData("api/getgoalsbymatch/" + strconv.Itoa(matchID))
 }
 
-func (c *Client) GetLastChangeDateByGroupLeagueSaison(groupOrderID int, leagueShortcut string, leagueSaison string) {}
+func (c *Client) GetLastChangeDateByGroupLeagueSaison(groupOrderID int, leagueShortcut string, leagueSaison string) {
+}
 
-
-func (c *Client) GetLastChangeDateByLeagueSaison(leagueShortcut string, leagueSaison int, day int) {
-	// day?
-	// 
-	// return c.getJsonData("api/getlastchangedate/" + leagueShortcut + "/" + leagueSaison + "/" + day )
+func (c *Client) GetLastChangeDateByLeagueSaison(leagueShortcut string, leagueSaison int, matchday int) {
+	// ?
+	// return c.getJsonData("api/getlastchangedate/" + leagueShortcut + "/" + leagueSaison + "/" + matchday )
 }
 
 func (c *Client) GetLastMatch(leagueShortcut string) (*[]Match, error) {
@@ -180,16 +198,18 @@ func (c *Client) GetLastMatch(leagueShortcut string) (*[]Match, error) {
 }
 
 func (c *Client) GetLastMatchByLeagueTeam(leagueID int, teamID int) (*[]Match, error) {
-	return c.getMatchData("api/getmatchdata/" + string(leagueID) + "/" + string(teamID))
+	return c.getMatchData("api/getmatchdata/" + strconv.Itoa(leagueID) + "/" + strconv.Itoa(teamID))
 }
 
-func (c *Client) GetMatchByMatchID(matchID int) (*[]Match, error)  {
-	return c.getMatchData("api/getmatchdata/" + string(matchID))
+func (c *Client) GetMatchByMatchID(matchID int) (*Match, error) {
+	return c.getSingleMatchData("api/getmatchdata/" + strconv.Itoa(matchID))
 }
 
-func (c *Client) GetMatchdataByGroupLeagueSaison(groupOrderID int, leagueShortcut string, leagueSaison string) {}
+func (c *Client) GetMatchdataByGroupLeagueSaison(groupOrderID int, leagueShortcut string, leagueSaison string) {
+}
 
-func (c *Client) GetMatchdataByGroupLeagueSaisonJSON(groupOrderID int, leagueShortcut string, leagueSaison string) {}
+func (c *Client) GetMatchdataByGroupLeagueSaisonJSON(groupOrderID int, leagueShortcut string, leagueSaison string) {
+}
 
 func (c *Client) GetMatchdataByLeagueDateTime(fromDateTime string, toDateTime string, leagueShortcut string) (*[]Match, error) {
 	// ?
@@ -197,11 +217,11 @@ func (c *Client) GetMatchdataByLeagueDateTime(fromDateTime string, toDateTime st
 }
 
 func (c *Client) GetMatchdataByLeagueSaison(leagueShortcut string, leagueSaison int) (*[]Match, error) {
-	return c.getMatchData("api/getmatchdata/" + leagueShortcut + "/" + string(leagueSaison))
+	return c.getMatchData("api/getmatchdata/" + leagueShortcut + "/" + strconv.Itoa(leagueSaison))
 }
 
 func (c *Client) GetMatchdataByTeams(teamID1 int, teamID2 int) (*[]Match, error) {
-	return c.getMatchData("api/getmatchdata/" + string(teamID1) + "/" + string(teamID2))
+	return c.getMatchData("api/getmatchdata/" + strconv.Itoa(teamID1) + "/" + strconv.Itoa(teamID2))
 }
 
 func (c *Client) GetNextMatch(leagaueShortcut string) {
@@ -209,11 +229,9 @@ func (c *Client) GetNextMatch(leagaueShortcut string) {
 }
 
 func (c *Client) GetNextMatchByLeagueTeam(leagueID int, teamID int) (*[]Match, error) {
-	return c.getMatchData("api/getnextmatchbyleagueteam/" +  string(leagueID) + "/" + string(teamID))
+	return c.getMatchData("api/getnextmatchbyleagueteam/" + strconv.Itoa(leagueID) + "/" + strconv.Itoa(teamID))
 }
 
 func (c *Client) GetTeamsByLeagueSaison(leagaueShortcut string, leagueSaison int) (*[]Match, error) {
-	return c.getMatchData("/api/getavailableteams/" +  leagaueShortcut + "/" + string(leagueSaison))
+	return c.getMatchData("/api/getavailableteams/" + leagaueShortcut + "/" + strconv.Itoa(leagueSaison))
 }
-
-

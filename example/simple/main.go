@@ -1,13 +1,13 @@
 package main
- 
+
 import (
-	"github.com/pce/go-openligadb/openligadb"
 	"fmt"
+	"github.com/pce/go-openligadb/openligadb"
 )
 
 func main() {
 	client := openligadb.NewClient(nil)
- 
+
 	// Fetch matches
 	league := "bl1"
 	year := 2018
@@ -18,9 +18,19 @@ func main() {
 		fmt.Printf("%v", err)
 	}
 
+	fmt.Println("-- GetMatches --")
 	for i, m := range *matches {
-		fmt.Printf("%v. %v\n", i+1, m)
+		fmt.Printf("%d) MatchID: %d ", (i + 1), m.MatchID)
+		fmt.Printf("%v\n", m.MatchDateTime)
+		fmt.Printf("%s - %s\n", m.Team1.TeamName, m.Team2.TeamName)
+		fmt.Printf("Result: %d:%d\n", m.MatchResults[0].PointsTeam1, m.MatchResults[0].PointsTeam2)
+		fmt.Println("-------------------------------------")
 	}
-	// fmt.Printf("%v", matches)
-}
+	matchID := 51211
+	match, err := client.GetMatchByMatchID(matchID)
+	if err != nil {
+		fmt.Printf("%v", err)
+	}
+	fmt.Printf("-- GGetMatchByMatchID --\n%v\n", match)
 
+}
